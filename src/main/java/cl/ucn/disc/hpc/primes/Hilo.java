@@ -15,7 +15,7 @@ public class Hilo extends Thread {
     /**
      * Counter of total primes
      */
-    private static final AtomicInteger counter = new AtomicInteger(0);
+    private static AtomicInteger counter = new AtomicInteger(0);
 
     /**
      * Partial constructor
@@ -75,6 +75,10 @@ public class Hilo extends Thread {
     public static int getPrimes() {
 
         return counter.get();
+    }
+
+    public static void restartCounter() {
+        counter = new AtomicInteger(0);
     }
 
 }
