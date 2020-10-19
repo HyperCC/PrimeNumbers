@@ -29,38 +29,6 @@ public final class App {
 
         log.debug("Initializing the App class ..");
 
-        /*
-        // The Chrono - to make snapshot of time
-        final StopWatch stopWatch = StopWatch.createStarted();
-
-        // quantity of primes up to ..
-        final long maybePrime = 1000;
-        // number of Threads to use simultaneously
-        final int nThreads = 1;
-
-        // The threads executor - use <n> threads to ..
-        final ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
-
-        for (long i = 1; i < maybePrime; i++) {
-            executorService.submit(new Hilo(i));
-        }
-
-        // Don't receive more tasks
-        executorService.shutdown();
-
-        // Sequential execution time
-
-
-        if (executorService.awaitTermination(1, TimeUnit.HOURS)) {
-
-            log.debug("Primes founded: {} in {}.", Hilo.getPrimes(), stopWatch);
-        } else {
-
-            // The calculate time
-            log.info("Done in {} without primes founded", stopWatch);
-        }
-         */
-
         // number of Threads to use simultaneously
         final int nThreads = 1;
         // verify quantity of number primes to ..
