@@ -1,2 +1,4 @@
 cl/ucn/disc/hpc/primes/App.java
  cl.ucn.disc.hpc.primes.App
+cl/ucn/disc/hpc/primes/Hilo.java
+ cl.ucn.disc.hpc.primes.Hilo
