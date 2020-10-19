@@ -43,15 +43,17 @@ public final class App {
         stopWatch.start();
         Hilo.restartCounter();
 
-
         // Time to execution with n Threads in milliseconds
         long Tn = getPrimesCant(maybePrime, nThreads).getTime(TimeUnit.MILLISECONDS);
 
         // Processing with Threads
         log.debug("Time to process with {} Threads: {} milliseconds", nThreads, Tn);
 
-        log.debug("Speedup: {}", (Ts * 1.0 / Tn * 1.0));
+        double speedup = (Ts * 1.0 / Tn * 1.0);
+        log.debug("Speedup: {}", speedup);
+        log.debug("Efficiency: {}", (speedup / nThreads * 1.0));
 
+        log.debug("Ending the application..");
     }
 
     /**
@@ -60,12 +62,6 @@ public final class App {
      * @return time to complete
      */
     public static StopWatch getPrimesCant(final long maybePrime, final int nThreads) throws InterruptedException {
-
-        // quantity of primes up to ..
-        //final long maybePrime = 1000;
-
-        // number of Threads to use simultaneously
-        //final int nThreads = 1;
 
         // The threads executor - use <n> threads to ..
         final ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
@@ -77,12 +73,12 @@ public final class App {
         // Don't receive more tasks
         executorService.shutdown();
 
-        // capure the time to process
+        // capture the time to process
         stopWatch.stop();
 
         if (executorService.awaitTermination(1, TimeUnit.HOURS)) {
 
-            log.debug("Primes founded: {} in {} with {} threads.", Hilo.getPrimes(), stopWatch, nThreads);
+            log.info("Primes founded: {} in {} with {} threads.", Hilo.getPrimes(), stopWatch, nThreads);
         } else {
 
             // The calculate time
