@@ -1,8 +1,26 @@
 # PrimeNumbers
 
-# All data obtained 
+> Speedup and Efficiency calculation
 
-| Threads | Time (milliseconds) | Speedup | Efficience |
+
+## Objective 
+
+The objective is to obtain the Speedup and the efficiency, 
+executing the code from 1 to 16 threads, verifying if the 
+numbers are prime or not from 2 to 100,000,000
+
+
+## Observation For Results
+
+* I tried to do it with 100M but the program sends errors, 
+my computer does not have enough memory to execute such 
+amount of processing and it stops.
+* The data is made for numbers up to 1M.
+
+
+## All Data Obtained 
+
+| Threads | Time (milliseconds) | Speedup | Efficiency |
 | --- | --- | --- | --- |
 | 1   | 473284  | 1       | 1       |
 | 2   | 311504  | 1.5193  | 0.7596  |
@@ -20,3 +38,23 @@
 | 14  | 184052  | 2.5714  | 0.1836  |
 | 15  | 188280  | 2.5137  | 0.1675  |
 | 16  | 205305  | 2.3052  | 0.1440  |
+
+
+## Efficiency Graph
+
+![TheEfficiency](./img/efficiency.png) 
+
+
+## Speedup Graph
+
+![TheSpeedup](./img/speedup.png) 
+
+
+## License
+
+This project is open-sourced software licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+
+## Contact
+
+Created by Computer Engineer [Charlie Condorcet](https://github.com/charliecondorcet)
