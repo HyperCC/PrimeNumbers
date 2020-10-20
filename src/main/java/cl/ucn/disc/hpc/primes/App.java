@@ -29,29 +29,36 @@ public final class App {
 
         log.debug("Initializing the App class ..");
 
-        // number of Threads to use simultaneously
-        final int nThreads = 1;
         // verify quantity of number primes to ..
-        final long maybePrime = 100000;
+        final long maybePrime = 1000000;
 
         // Sequential execution time in milliseconds
         long Ts = getPrimesCant(maybePrime, 1).getTime(TimeUnit.MILLISECONDS);
-
-        // Sequential processing
         log.debug("Time to process sequentially: {} milliseconds", Ts);
-        stopWatch.reset();
-        stopWatch.start();
-        Hilo.restartCounter();
 
-        // Time to execution with n Threads in milliseconds
-        long Tn = getPrimesCant(maybePrime, nThreads).getTime(TimeUnit.MILLISECONDS);
+        log.debug("Speedup: 1 with 1 Thread");
+        log.debug("Efficiency: 1 with 1 Thread");
+        log.debug("**********************************************************\n");
 
-        // Processing with Threads
-        log.debug("Time to process with {} Threads: {} milliseconds", nThreads, Tn);
+        // number of Threads to use simultaneously from 1 to 16
+        for (int nThreads = 2; nThreads <= 16; nThreads++) {
 
-        double speedup = (Ts * 1.0 / Tn * 1.0);
-        log.debug("Speedup: {}", speedup);
-        log.debug("Efficiency: {}", (speedup / nThreads * 1.0));
+            // restart the time
+            stopWatch.reset();
+            stopWatch.start();
+            // restart the primes counter
+            Hilo.restartCounter();
+
+            // Time to execution with n Threads in milliseconds
+            long Tn = getPrimesCant(maybePrime, nThreads).getTime(TimeUnit.MILLISECONDS);
+            log.debug("Time to process with {} Threads: {} milliseconds", nThreads, Tn);
+
+            double speedup = (Ts * 1.0 / Tn * 1.0);
+            log.debug("Speedup: {} with {} Threads", speedup, nThreads);
+            log.debug("Efficiency: {} with {} Threads", (speedup / nThreads * 1.0), nThreads);
+
+            log.debug("**********************************************************\n");
+        }
 
         log.debug("Ending the application..");
     }
@@ -67,14 +74,12 @@ public final class App {
         final ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
 
         for (long i = 1; i < maybePrime; i++) {
+
             executorService.submit(new Hilo(i));
         }
 
         // Don't receive more tasks
         executorService.shutdown();
-
-        // capture the time to process
-        stopWatch.stop();
 
         if (executorService.awaitTermination(1, TimeUnit.HOURS)) {
 
