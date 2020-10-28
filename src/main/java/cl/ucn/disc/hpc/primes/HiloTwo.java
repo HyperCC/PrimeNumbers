@@ -65,18 +65,22 @@ public class HiloTwo extends Thread {
             throw new IllegalArgumentException("Error in n: Can't process negative n");
         }
 
-        // 1 isn't prime!
-        if (n == 1) {
+        // the principal primes
+        if (n < 6)
+            if (n == 2 || n == 3 || n == 5)
+                return true;
+
+        // 1 isn't prime! - the multiples of 2,3,5 aren't primes
+        if (n == 1 || n % 2 == 0 || n % 3 == 0 || n % 5 == 0)
             return false;
-        }
 
         // Testing primality from 2 to n-1
-        for (long i = 2; i < n; i++) {
+        for (long i = 3; (i * i) <= n; i += 2) {
 
             // if the module ==0 -> not prime!
-            if (n % i == 0) {
+            if (n % i == 0)
                 return false;
-            }
+
         }
         return true;
     }
@@ -95,6 +99,7 @@ public class HiloTwo extends Thread {
      * Restart the counter to 0 to a new iteration with different cores cant
      */
     public static void restartCounter() {
+
         cantPrimes = new AtomicInteger(0);
     }
 }

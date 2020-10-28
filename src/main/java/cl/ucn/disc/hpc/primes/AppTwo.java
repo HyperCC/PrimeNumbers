@@ -31,10 +31,10 @@ public class AppTwo {
         log.debug("Start the AppTwo..");
 
         // num max to find primes
-        final long maxPrimes = 10000;
+        final long maxPrimes = 1000000;
 
         // cant of loop for each test with N cores
-        final int runs = 3;
+        final int runs = 8;
 
         // cant of cores
         final int maxCores = Runtime.getRuntime().availableProcessors();
@@ -47,9 +47,9 @@ public class AppTwo {
             List<Long> times = new ArrayList<>();
 
             // run the App to 1-N cores
-            for (int i = 0; i <= runs; i++) {
+            for (int i = 1; i <= runs; i++) {
                 long ms = initCalculate(nConcurrentThreads, maxPrimes);
-                times.add(ms);
+                times.add(ms / nConcurrentThreads);
 
                 // restart the primes counter
                 HiloTwo.restartCounter();
@@ -83,9 +83,8 @@ public class AppTwo {
         final ExecutorService executorService = Executors.newFixedThreadPool(nConcurrentThreads);
 
         // crear los hilos
-        for (int i = 1; i <= nConcurrentThreads; i++) {
+        for (int i = 1; i <= nConcurrentThreads; i++)
             executorService.submit(new HiloTwo(maxPrimes, new AtomicLong(1)));
-        }
 
         // iniciar conteo temporal del procesamiento
         final StopWatch stopWatch = StopWatch.createStarted();
@@ -93,9 +92,11 @@ public class AppTwo {
 
         // verificar que se cumpla la busueda en menos de 5 min o lanzar InterruptedException
         if (executorService.awaitTermination(5, TimeUnit.MINUTES)) {
-            log.debug("{} cores found {} primes in {}", nConcurrentThreads, HiloTwo.getPrimes(), stopWatch);
+            log.debug("{} cores found {} primes in {} milliseconds", nConcurrentThreads, HiloTwo.getPrimes() / nConcurrentThreads, stopWatch.getTime(TimeUnit.MILLISECONDS) / nConcurrentThreads);
+
         } else {
-            log.debug("Can't finish with {} cores in {}", nConcurrentThreads, stopWatch);
+            log.debug("Can't finish with {} cores in {} milliseconds", nConcurrentThreads, stopWatch.getTime(TimeUnit.MILLISECONDS) / nConcurrentThreads);
+
         }
 
         // devolver cantidad total de tiempo empleado

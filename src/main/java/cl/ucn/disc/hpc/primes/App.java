@@ -30,7 +30,7 @@ public final class App {
         log.debug("Initializing the App class ..");
 
         // verify quantity of number primes to ..
-        final long maybePrime = 10000;
+        final long maybePrime = 100000;
 
         // Sequential execution time in milliseconds
         long Ts = getPrimesCant(maybePrime, 1).getTime(TimeUnit.MILLISECONDS);
