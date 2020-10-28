@@ -1,10 +1,17 @@
 package cl.ucn.disc.hpc.primes;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class AppTwo {
 
@@ -13,117 +20,83 @@ public class AppTwo {
      */
     private static final Logger log = LoggerFactory.getLogger(App.class);
 
-    public static void main(String[] args) {
 
-        long timeactual = System.currentTimeMillis();
-        int cont = 0;
+    /**
+     * the main
+     *
+     * @param args
+     */
+    public static void main(String[] args) throws InterruptedException {
 
-        /*
-        for (long i = 2; i < 100000; i++) {
+        final long maxPrimes = 10000;
 
-            if (i == 2 || i == 3 || i == 5 || i == 7) {
-                cont++;
-                continue;
+        final int runs = 3;
+
+        final int maxCores = Runtime.getRuntime().availableProcessors();
+        log.debug("Finding to {} with {} maxCores", maxPrimes, maxCores);
+
+
+        for (int nConcurrentThreads = maxCores; nConcurrentThreads > 0; nConcurrentThreads--) {
+            List<Long> times = new ArrayList<>();
+
+            for (int i = 0; i <= runs; i++) {
+                long ms = initCalculate(nConcurrentThreads, maxPrimes);
+                times.add(ms);
             }
 
-            if (i % 2 == 0 || i % 3 == 0 || i % 5 == 0 || i % 7 == 0) {
-                continue;
+            for (Long time : times) {
+                log.debug("Time: {}", time);
             }
-            if (isPrime(i)) {
-                log.debug("numero primo {}", i);
-                cont++;
-            }
+
+            times.remove(Collections.min(times));
+            times.remove(Collections.max(times));
+
+            Double average = times.stream().mapToDouble(d -> d).average().orElse(0.0);
+            log.debug("{} cores take an avegae of: {} ml", nConcurrentThreads, average);
         }
-
-         */
-
-        List<Long> numPrimos = new ArrayList();
-
-        for (long i = 2; i <= 100000; i++) {
-            if (i == 2 || i == 3 || i == 5 || i == 7) {
-                cont++;
-                numPrimos.add(i);
-                continue;
-            }
-            if (i % 2 == 0 || i % 3 == 0 || i % 5 == 0 || i % 7 == 0) {
-                continue;
-            }
-
-            for (long j = 2; j < i; j++) {
-                if (i % j == 0) {
-                    break;
-                } else if (j == i - 1) {
-                    cont++;
-                    numPrimos.add(i);
-                }
-            }
-        }
-
-        long timefinal = System.currentTimeMillis();
-
-        log.debug("la hora final es {} ", (timefinal - timeactual));
-        log.debug("total de primos {}", cont);
-        //log.debug("total de buces {}", bucles);
-
-        timeactual = System.currentTimeMillis();
-        int nuevoCont = 0;
-        log.debug("LA SEGUNDA VEZ:");
-        for (long i = 2; i <= 100000; i++) {
-            if (numPrimos.contains(i)) {
-                nuevoCont++;
-            }
-        }
-        timefinal = System.currentTimeMillis();
-        log.debug("OTRO CONTADOR {}", nuevoCont);
-        log.debug("la hora final es {} ", (timefinal - timeactual));
-
-         /*
-        total tiempo 5594
-        total primos 9592
-        total bucles 455189149
-         */
-
     }
 
-    public static boolean isPrime(final long n) {
+    /**
+     * @param nConcurrentThreads
+     * @param maxPrimes
+     * @return
+     * @throws InterruptedException
+     */
+    public static long initCalculate(final int nConcurrentThreads, final long maxPrimes) throws InterruptedException {
 
-        if (n <= 0) {
-            throw new IllegalArgumentException("Error in n: Can't process negative n");
+        final ExecutorService executorService = Executors.newFixedThreadPool(nConcurrentThreads);
+
+        // crear los hilos
+        for (int i = 1; i <= nConcurrentThreads; i++) {
+            executorService.submit(new HiloTwo(maxPrimes, new AtomicLong(nConcurrentThreads)));
         }
 
-        // 1 isn't prime!
-        if (n == 1) {
-            return false;
+        // iniciar conteo temporal del procesamiento
+        final StopWatch stopWatch = StopWatch.createStarted();
+        executorService.shutdown();
+
+        // verificar que se cumpla la busueda en menos de 5 min o lanzar InterruptedException
+        if (executorService.awaitTermination(5, TimeUnit.MINUTES)) {
+            log.debug("{} cores found {} primes in {}", nConcurrentThreads, Hilo.getPrimes(), stopWatch);
+        } else {
+            log.debug("Can't finish with {} cores in {}", nConcurrentThreads, stopWatch);
         }
 
-        // Testing primality from 2 to n-1
-        for (long i = 2; i < n; i++) {
-
-            if (i == 2 || i == 3 || i == 5 || i == 7) {
-                continue;
-            }
-
-            if (i % 2 == 0 || i % 3 == 0 || i % 5 == 0 || i % 7 == 0) {
-                continue;
-            }
-
-            // if the module ==0 -> not prime!
-            if (n % i == 0) {
-                return false;
-            }
-        }
-        return true;
-
-        /*
-        6281
-        5802
-        5557
-         */
-
-        /*
-        6572
-        5777
-        6045
-         */
+        // devolver cantidad total de tiempo empleado
+        return stopWatch.getTime(TimeUnit.MILLISECONDS);
     }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
