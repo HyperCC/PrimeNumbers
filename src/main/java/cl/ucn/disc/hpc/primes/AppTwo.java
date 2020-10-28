@@ -31,16 +31,16 @@ public class AppTwo {
         log.debug("Start the AppTwo..");
 
         // num max to find primes
-        final long maxPrimes = 100000;
+        final long maxPrimes = 10000;
 
 
         // initialize the MakePrimesList
-        log.debug("iniciando lista primos");
+        log.debug("creando lista completa de primos");
         MakePrimesList losPrimos = new MakePrimesList(maxPrimes);
 
         // calculate the list of primes
         losPrimos.calculatePrimes();
-        log.debug("lista de primos obtenida");
+        log.debug("lista completa de primos obtenida");
 
         // get the list complete of primes
         List<Long> listaPrimos = losPrimos.getNumPrimos();

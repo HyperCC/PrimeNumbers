@@ -12,10 +12,11 @@ numbers are prime or not from 2 to 100,000,000
 
 ## Observation For Results
 
-* I tried to do it with 100M but the program sends errors, 
-my computer does not have enough memory to execute such 
-amount of processing and it stops.
-* The data is made for numbers up to 1M.
+* Bug: There is an error that causes tasks already carried 
+out to be repeated multiple times.
+* Collateral: due to the bug I have not been able to make 
+the graphics correctly.
+* Observation: do not consider tables with results this 28-10
 
 
 ## All Data Obtained 

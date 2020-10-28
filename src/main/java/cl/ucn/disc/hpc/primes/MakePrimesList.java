@@ -35,7 +35,7 @@ public final class MakePrimesList {
 
             boolean isPrime = true;
 
-            for (long j = 3; j < i; j += 2) {
+            for (long j = 3; j * j < i; j += 2) {
                 if (i % j == 0) {
                     isPrime = false;
                     break;
