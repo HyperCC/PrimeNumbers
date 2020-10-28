@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -13,6 +12,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * Second version to find primes with N cores according mi PC
+ */
 public class AppTwo {
 
     /**
@@ -20,40 +22,54 @@ public class AppTwo {
      */
     private static final Logger log = LoggerFactory.getLogger(App.class);
 
-
     /**
      * the main
      *
      * @param args
      */
     public static void main(String[] args) throws InterruptedException {
+        log.debug("Start the AppTwo..");
 
+        // num max to find primes
         final long maxPrimes = 10000;
 
+        // cant of loop for each test with N cores
         final int runs = 3;
 
+        // cant of cores
         final int maxCores = Runtime.getRuntime().availableProcessors();
         log.debug("Finding to {} with {} maxCores", maxPrimes, maxCores);
 
-
+        // code initiator
         for (int nConcurrentThreads = maxCores; nConcurrentThreads > 0; nConcurrentThreads--) {
+
+            // records to each iteration
             List<Long> times = new ArrayList<>();
 
+            // run the App to 1-N cores
             for (int i = 0; i <= runs; i++) {
                 long ms = initCalculate(nConcurrentThreads, maxPrimes);
                 times.add(ms);
+
+                // restart the primes counter
+                HiloTwo.restartCounter();
             }
 
+            // print all times saved to N cores
             for (Long time : times) {
                 log.debug("Time: {}", time);
             }
 
+            // delete minim and maxim to avoid bias
             times.remove(Collections.min(times));
             times.remove(Collections.max(times));
 
+            // results for iteration
             Double average = times.stream().mapToDouble(d -> d).average().orElse(0.0);
-            log.debug("{} cores take an avegae of: {} ml", nConcurrentThreads, average);
+            log.debug("{} cores take an average of: {} ml", nConcurrentThreads, average);
         }
+
+        log.debug("Ending the AppTwo..");
     }
 
     /**
@@ -68,7 +84,7 @@ public class AppTwo {
 
         // crear los hilos
         for (int i = 1; i <= nConcurrentThreads; i++) {
-            executorService.submit(new HiloTwo(maxPrimes, new AtomicLong(nConcurrentThreads)));
+            executorService.submit(new HiloTwo(maxPrimes, new AtomicLong(1)));
         }
 
         // iniciar conteo temporal del procesamiento
@@ -77,7 +93,7 @@ public class AppTwo {
 
         // verificar que se cumpla la busueda en menos de 5 min o lanzar InterruptedException
         if (executorService.awaitTermination(5, TimeUnit.MINUTES)) {
-            log.debug("{} cores found {} primes in {}", nConcurrentThreads, Hilo.getPrimes(), stopWatch);
+            log.debug("{} cores found {} primes in {}", nConcurrentThreads, HiloTwo.getPrimes(), stopWatch);
         } else {
             log.debug("Can't finish with {} cores in {}", nConcurrentThreads, stopWatch);
         }

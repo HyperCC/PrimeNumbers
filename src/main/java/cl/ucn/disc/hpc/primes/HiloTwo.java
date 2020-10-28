@@ -34,7 +34,7 @@ public class HiloTwo extends Thread {
     }
 
     /**
-     *
+     * the run from Thread
      */
     @Override
     public void run() {
@@ -79,5 +79,22 @@ public class HiloTwo extends Thread {
             }
         }
         return true;
+    }
+
+    /**
+     * The total primes counter
+     *
+     * @return
+     */
+    public static int getPrimes() {
+
+        return cantPrimes.get();
+    }
+
+    /**
+     * Restart the counter to 0 to a new iteration with different cores cant
+     */
+    public static void restartCounter() {
+        cantPrimes = new AtomicInteger(0);
     }
 }
