@@ -18,7 +18,7 @@ public final class MakePrimesList {
 
     public void calculatePrimes() {
 
-        for (long i = 2; i < this.maxNumber; i++) {
+        for (long i = 1; i < this.maxNumber; i += 2) {
 
             // the principal primes
             if (i < 6) {

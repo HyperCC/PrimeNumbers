@@ -31,15 +31,18 @@ public class AppTwo {
         log.debug("Start the AppTwo..");
 
         // num max to find primes
-        final long maxPrimes = 10000;
+        final long maxPrimes = 100000;
 
+
+        // initialize the MakePrimesList
+        log.debug("iniciando lista primos");
+        MakePrimesList losPrimos = new MakePrimesList(maxPrimes);
 
         // calculate the list of primes
-        log.debug("iniciando lista primos ");
-        MakePrimesList losPrimos = new MakePrimesList(maxPrimes);
         losPrimos.calculatePrimes();
+        log.debug("lista de primos obtenida");
 
-        // the list complete of primes
+        // get the list complete of primes
         List<Long> listaPrimos = losPrimos.getNumPrimos();
         log.debug("fin lista primos total de {}", listaPrimos.size());
 
@@ -59,7 +62,7 @@ public class AppTwo {
 
             // run the App to 1-N cores
             for (int i = 1; i <= runs; i++) {
-                long ms = initCalculate(nConcurrentThreads, maxPrimes);
+                long ms = initCalculate(nConcurrentThreads, maxPrimes, listaPrimos);
                 times.add(ms / nConcurrentThreads);
 
                 // restart the primes counter
@@ -84,18 +87,21 @@ public class AppTwo {
     }
 
     /**
+     * Initialize the HiloTwo creation
+     *
      * @param nConcurrentThreads
      * @param maxPrimes
+     * @param allPrimes
      * @return
      * @throws InterruptedException
      */
-    public static long initCalculate(final int nConcurrentThreads, final long maxPrimes) throws InterruptedException {
+    public static long initCalculate(final int nConcurrentThreads, final long maxPrimes, List<Long> allPrimes) throws InterruptedException {
 
         final ExecutorService executorService = Executors.newFixedThreadPool(nConcurrentThreads);
 
         // crear los hilos
         for (int i = 1; i <= nConcurrentThreads; i++)
-            executorService.submit(new HiloTwo(maxPrimes, new AtomicLong(1)));
+            executorService.submit(new HiloTwo(maxPrimes, new AtomicLong(1), allPrimes));
 
         // iniciar conteo temporal del procesamiento
         final StopWatch stopWatch = StopWatch.createStarted();

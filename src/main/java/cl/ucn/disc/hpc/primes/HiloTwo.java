@@ -1,8 +1,8 @@
 package cl.ucn.disc.hpc.primes;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.ExecutorService;
 
 public class HiloTwo extends Thread {
 
@@ -17,6 +17,11 @@ public class HiloTwo extends Thread {
     private final AtomicLong current;
 
     /**
+     * The complete list of primes
+     */
+    private final List<Long> allPrimes;
+
+    /**
      * Counter of total primes
      */
     private static AtomicInteger cantPrimes = new AtomicInteger(0);
@@ -26,11 +31,13 @@ public class HiloTwo extends Thread {
      *
      * @param possiblePrime
      * @param current
+     * @param allPrimes
      */
-    public HiloTwo(long possiblePrime, AtomicLong current) {
+    public HiloTwo(long possiblePrime, AtomicLong current, List<Long> allPrimes) {
         super();
         this.possiblePrime = possiblePrime;
         this.current = current;
+        this.allPrimes = allPrimes;
     }
 
     /**
@@ -47,7 +54,8 @@ public class HiloTwo extends Thread {
             if (prime > this.possiblePrime)
                 return;
 
-            if (isPrime(prime))
+            //if (isPrime(prime))
+            if (isPrimeSecondVersion(prime))
                 cantPrimes.getAndIncrement();
 
         }
@@ -83,6 +91,17 @@ public class HiloTwo extends Thread {
 
         }
         return true;
+    }
+
+    /**
+     * Verify if the number provided is prime checking the list
+     *
+     * @param n
+     * @return
+     */
+    public boolean isPrimeSecondVersion(final long n) {
+
+        return (this.allPrimes.contains(n)) ? true : false;
     }
 
     /**
