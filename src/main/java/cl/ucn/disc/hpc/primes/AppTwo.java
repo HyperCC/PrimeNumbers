@@ -31,14 +31,25 @@ public class AppTwo {
         log.debug("Start the AppTwo..");
 
         // num max to find primes
-        final long maxPrimes = 1000000;
+        final long maxPrimes = 10000;
+
+
+        // calculate the list of primes
+        log.debug("iniciando lista primos ");
+        MakePrimesList losPrimos = new MakePrimesList(maxPrimes);
+        losPrimos.calculatePrimes();
+
+        // the list complete of primes
+        List<Long> listaPrimos = losPrimos.getNumPrimos();
+        log.debug("fin lista primos total de {}", listaPrimos.size());
+
 
         // cant of loop for each test with N cores
         final int runs = 8;
 
         // cant of cores
         final int maxCores = Runtime.getRuntime().availableProcessors();
-        log.debug("Finding to {} with {} maxCores", maxPrimes, maxCores);
+        log.debug("Finding primes numbers to {} with {} maxCores", maxPrimes, maxCores);
 
         // code initiator
         for (int nConcurrentThreads = maxCores; nConcurrentThreads > 0; nConcurrentThreads--) {
